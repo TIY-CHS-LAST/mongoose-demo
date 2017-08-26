@@ -4,10 +4,12 @@
 // createPerson
 
 const mongoose = require('mongoose')
-const Person = require('./models/Person')
+const Person = require('./model')
 mongoose.Promise = require('bluebird')
 // Replace "test" with your database name.
-mongoose.connect('mongodb://localhost:27017/peopledb')
+mongoose.connect('mongodb://localhost:27017/peopledb', {
+  useMongoClient: true
+})
 
 function getAllPeople () {
   return Person.find()
@@ -21,7 +23,7 @@ function getPerson (personId) {
 
 function getPersonByUsername (username) {
   return Person.find({ username: username }).catch(function (err) {
-    console.log(err)
+    console.log('ERROR!!!!!', err)
   })
 }
 function getPersonByEmail (email) {
