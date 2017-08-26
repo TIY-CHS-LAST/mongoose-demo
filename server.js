@@ -6,7 +6,7 @@ const app = express()
 
 app.engine('mustache', mustacheExpress())
 app.set('view engine', 'mustache')
-app.set('views', [ __dirname + '/people/views' ])
+app.set('views', __dirname + '/people/views')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>inside people!!
-    {{#people}}
-      <p>{{name}}<a href="/people/{{_id}}"><img src="{{avatar}}"></a></p>
-    {{/people}}
+  {{>_head}}
+  <body>
+    <div class="cf">
+      {{#people}}
+        {{>person}}
+      {{/people}}
+    </div>
   </body>
 </html>

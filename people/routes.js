@@ -15,11 +15,11 @@ router
       const [ person ] = email
         ? (await getPersonByEmail(email))
         : (await getPersonByUsername(username))
-
+      person.title = person.name
       return res.render('show', person)
     }
     const people = await getAllPeople()
-    res.render('list', { people })
+    res.render('list', { people, title: 'People List' })
   })
   .post(async ({ body }, res) => {
     const result = await addPerson(body)
