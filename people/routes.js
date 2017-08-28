@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const Person = require('./model')
 const {
   getAllPeople,
   getPerson,
@@ -7,9 +8,49 @@ const {
   addPerson,
   deletePerson
 } = require('./dal')
+
+router
+  .route('/login')
+  .get(function (req, res) {
+    res.render('login')
+  })
+  .post(function (req, res) {
+    // user special dal for login
+    // redirect to secret site
+    Person.findOne({ username: req.body.username }, '+password', function (
+      err,
+      user,
+      next
+    ) {
+      if (err) return next(err)
+      if (!user) {
+        return res.status(401).send({ message: 'Wrong email and/or password' })
+      }
+      user.comparePassword(req.body.password, user.password, function (
+        err,
+        isMatch
+      ) {
+        if (!isMatch) {
+          return res
+            .status(401)
+            .send({ message: 'Wrong email and/or password' })
+        }
+        res.send({ status: 'success', user: user.name })
+      })
+    })
+  })
+router.route('/logout').post(function (req, res) {
+})
+router.route('/register').get(function (req, res) {
+  // / use createUser dal methods
+  // send back success or redirect
+  res.render('add')
+})
+
 router
   .route('/')
   .get(async ({ query }, res) => {
+    console.log('QUERYSTRING!!!!!!!', query)
     const { email, username } = query
     if (email || username) {
       const [ person ] = email
