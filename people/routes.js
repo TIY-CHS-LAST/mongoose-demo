@@ -8,38 +8,34 @@ const {
   addPerson,
   deletePerson
 } = require('./dal')
+const passport = require('passport')
+const { isAuthenticated } = require('./passport')
 
 router
   .route('/login')
   .get(function (req, res) {
+    // req.session.destroy()
     res.render('login')
   })
-  .post(function (req, res) {
-    // user special dal for login
-    // redirect to secret site
-    Person.findOne({ username: req.body.username }, '+password', function (
-      err,
-      user,
-      next
-    ) {
-      if (err) return next(err)
-      if (!user) {
-        return res.status(401).send({ message: 'Wrong email and/or password' })
+  .post((req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+      if (err) {
+        return next(err)
       }
-      user.comparePassword(req.body.password, user.password, function (
-        err,
-        isMatch
-      ) {
-        if (!isMatch) {
-          return res
-            .status(401)
-            .send({ message: 'Wrong email and/or password' })
+      if (!user) {
+        return res.redirect('/people/login')
+      }
+      req.logIn(user, (err, obj) => {
+        if (err) {
+          return next(err)
         }
-        res.send({ status: 'success', user: user.name })
+        res.redirect('/people/new')
       })
-    })
+    })(req, res, next)
   })
-router.route('/logout').post(function (req, res) {
+router.route('/logout').get(function (req, res) {
+  req.logout()
+  res.redirect('/people')
 })
 router.route('/register').get(function (req, res) {
   // / use createUser dal methods
@@ -67,7 +63,8 @@ router
     res.send(result)
   })
 
-router.route('/new').get((req, res) => {
+router.route('/new').get(isAuthenticated, (req, res) => {
+  console.log(req.session)
   res.render('add')
 })
 

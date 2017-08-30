@@ -1,1 +1,5 @@
-module.exports = { model: require('./model'), routes: require('./routes') }
+module.exports = {
+  model: require('./model'),
+  peopleRoutes: require('./routes'),
+  passportConfig: require('./passport')
+}

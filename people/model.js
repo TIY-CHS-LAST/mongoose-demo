@@ -8,8 +8,11 @@ const PersonSchema = new mongoose.Schema({
   living: { type: Boolean, default: true },
   username: { type: String },
   avatar: { type: String },
+  profile: { name: { type: String }, picture: { type: String } },
   password: { type: String, select: false },
-  updated_at: { type: Date }
+  updated_at: { type: Date },
+  facebook: { type: String },
+  tokens: [ { kind: { type: String }, accessToken: { type: String } } ]
 })
 
 PersonSchema.pre('save', function (next) {
